@@ -5,11 +5,14 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,16 +31,18 @@ public class StudentController {
 	
 	private StudentService studentService;
 	
-	private StudentValidator validator;
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.setValidator(new StudentValidator());
+	}
 	
 	@Autowired
-	public StudentController(StudentService studentService, StudentValidator validator) {
+	public StudentController(StudentService studentService) {
 		this.studentService = studentService;
-		this.validator = validator;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Student> create(@Validated @RequestBody Student student) throws NotFoundException {
+	public ResponseEntity<Student> create(@Valid @RequestBody Student student) throws NotFoundException {
 		Student newStudent = studentService.create(student);
 		return new ResponseEntity<>(newStudent,HttpStatus.CREATED);
 	}
@@ -48,14 +53,29 @@ public class StudentController {
 		return studentService.listAll();
 	}
 	
+	@GetMapping
+	public Page<Student> findAll(Pageable pageable) {
+		return studentService.findAll(pageable);
+	}
+	
+	@GetMapping("/{id}")
+	public Student findById(@PathVariable Integer id) {
+		return studentService.findById(id);
+	}
+	
 	@PutMapping("/{id}")
 	public Student update(@PathVariable("id") Integer id,
 											@Valid @RequestBody Student student) {
 		return studentService.update(id, student);
 	}
 	
-	@DeleteMapping("{id}")
+	@DeleteMapping("/{id}")
 	public void delete(@PathVariable("id") Integer id) {
 		studentService.delete(id);
+	}
+	
+	@GetMapping("/younger")
+	public List<Student> findYounger() {
+		return studentService.findYounger();
 	}
 }

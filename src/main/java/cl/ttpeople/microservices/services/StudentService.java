@@ -20,4 +20,7 @@ public interface StudentService {
 	Page<Student> findAll(Pageable pageable);
 	
 	Student findById(Integer id);
+	
+	List<Student> findYounger();
+	
 }

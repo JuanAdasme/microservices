@@ -3,6 +3,8 @@ package cl.ttpeople.microservices.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,10 +36,20 @@ public class CourseController {
 		return new ResponseEntity<>(createdCourse,HttpStatus.CREATED);
 	}
 	
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<?> listAll() {
 		List<Course> courses = service.listAll();
 		return new ResponseEntity<>(courses,HttpStatus.OK);
+	}
+	
+	@GetMapping
+	public Page<Course> findAll(Pageable pageable) {
+		return service.findAll(pageable);
+	}
+	
+	@GetMapping("/{id}")
+	public Course findById(@PathVariable Integer id) {
+		return service.findById(id);
 	}
 	
 	@PutMapping("/{id}")

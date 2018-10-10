@@ -1,14 +1,19 @@
 package cl.ttpeople.microservices.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
-public class Student {
+public class Student implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -18,7 +23,8 @@ public class Student {
 	
 	private int age;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JsonBackReference
 	private Course course;
 
 	public Student(Integer id, @NotNull String rut, int age) {

@@ -3,8 +3,11 @@ package cl.ttpeople.microservices.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import cl.ttpeople.microservices.exceptions.NotFoundException;
 import cl.ttpeople.microservices.models.Course;
 import cl.ttpeople.microservices.repositories.CourseRepository;
 
@@ -36,12 +39,28 @@ public class CourseServiceImpl implements CourseService {
 			savedCourse.setName(course.getName());
 			return repository.save(savedCourse);
 		}
-		return null;
+		else {
+			throw new NotFoundException(String.format("Course with ID %d not found!", id));
+		}
 	}
 
 	@Override
 	public void delete(Integer id) {
 		repository.deleteById(id);
-		
+	}
+	
+	@Override
+	public Page<Course> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
+	
+	@Override
+	public Course findById(Integer id) {
+		Course found = repository.findById(id)
+						.orElse(null);
+		System.out.println("Course: " + found);
+		if(found == null) 
+			throw new NotFoundException(String.format("Course with ID %d not found!", id));
+		return found;
 	}
 }

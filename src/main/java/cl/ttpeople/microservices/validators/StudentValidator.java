@@ -28,14 +28,12 @@ public class StudentValidator implements Validator {
 	
 	public boolean validateRut(String rut) {
 		String regex = "((\\d{1,3}(\\.\\d{3}){2})|(\\d{7,9}))-?[\\dkK]";
-		System.out.println("RUT: " + rut);
 		if(rut.matches(regex))
 			return true;
 		return false;
 	}
 	
 	public boolean validateAge(int age) {
-		System.out.println("Age: " + age);
 		return age < 18 ? false : true;
 	}
 }

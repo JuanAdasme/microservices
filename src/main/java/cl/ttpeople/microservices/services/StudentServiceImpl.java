@@ -1,5 +1,6 @@
 package cl.ttpeople.microservices.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,28 +59,48 @@ public class StudentServiceImpl implements StudentService {
 				if(course != null) {
 					savedStudent.setCourse(course);
 				}
+				else {
+					throw new NotFoundException(String.format("Course with ID %d not found!", student.getCourse().getId()));
+				}
 			}
 			savedStudent.setRut(student.getRut());
 			savedStudent.setAge(student.getAge());
 			return studentRepository.save(savedStudent);
 		}
-		return null;
+		else {
+			throw new NotFoundException(String.format("Student with ID %d not found!", id));
+		}
 	}
 
 	@Override
 	public void delete(Integer id) {
+		Student found = studentRepository.findById(id)
+						.orElse(null);
+		if(found == null)
+			throw new NotFoundException(String.format("Student with ID %d not found!", id));
 		studentRepository.deleteById(id);
 	}
 
 	@Override
 	public Page<Student> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		return studentRepository.findAll(pageable);
 	}
 
 	@Override
 	public Student findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		Student found = studentRepository.findById(id)
+						.orElse(null);
+		if(found == null) {
+			throw new NotFoundException(String.format("Student with ID %d not found!", id));
+		}
+		return found;
+	}
+	
+	@Override
+	public List<Student> findYounger() {
+		List<Student> allStudents = studentRepository.findAll();
+		List<Student> youngerStudents = new ArrayList<>();
+		allStudents.forEach(s -> {if(s.getAge() >= 18 && s.getAge() <= 25) youngerStudents.add(s);});
+		return youngerStudents;
 	}
 }
