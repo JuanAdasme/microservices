@@ -3,7 +3,9 @@ package cl.ttpeople.microservices.interceptors;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
+@Component
 @Aspect
 public class AroundDatabase {
 	
@@ -14,4 +16,11 @@ public class AroundDatabase {
 		System.out.println("After");
 		return retVal;
 	}
+	
+	@Around("execution(* cl.ttpeople.microservices.services.*.*(..))")
+	public void testAdvice(ProceedingJoinPoint pjp) throws Throwable {
+		System.out.println("Testing advice. Kind: " + pjp.getKind());
+		System.out.println("Signature: " + pjp.getSignature().toString());
+	}
+	
 }
