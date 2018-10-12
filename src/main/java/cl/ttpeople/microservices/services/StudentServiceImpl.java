@@ -2,6 +2,7 @@ package cl.ttpeople.microservices.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -102,5 +103,33 @@ public class StudentServiceImpl implements StudentService {
 		List<Student> youngerStudents = new ArrayList<>();
 		allStudents.forEach(s -> {if(s.getAge() >= 18 && s.getAge() <= 25) youngerStudents.add(s);});
 		return youngerStudents;
+	}
+	
+	@Override
+	public List<List<Student>> findByRange() {
+		List<Student> students = studentRepository.findAll();
+		List<List<Student>> filtered = new ArrayList<>();
+		List<Student> lower;
+		List<Student> middle;
+		List<Student> higher;
+		
+		lower = students.stream().parallel()
+		        .filter(s -> s.getAge() >= 18 && s.getAge() <= 25)
+		        .sequential()
+		        .collect(Collectors.toList());
+		middle = students.stream().parallel()
+		        .filter(s -> s.getAge() > 25 && s.getAge() <= 35)
+		        .sequential()
+		        .collect(Collectors.toList());
+		higher = students.stream().parallel()
+		        .filter(s -> s.getAge() > 35)
+		        .sequential()
+		        .collect(Collectors.toList());
+		
+		filtered.add(lower);
+		filtered.add(middle);
+		filtered.add(higher);
+		
+		return filtered;
 	}
 }

@@ -23,4 +23,5 @@ public interface StudentService {
 	
 	List<Student> findYounger();
 	
+	List<List<Student>> findByRange();
 }
