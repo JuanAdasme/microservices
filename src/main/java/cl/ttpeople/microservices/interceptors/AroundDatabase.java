@@ -18,9 +18,10 @@ public class AroundDatabase {
 	}
 	
 	@Around("execution(* cl.ttpeople.microservices.services.*.*(..))")
-	public void testAdvice(ProceedingJoinPoint pjp) throws Throwable {
+	public Object testAdvice(ProceedingJoinPoint pjp) throws Throwable {
 		System.out.println("Testing advice. Kind: " + pjp.getKind());
 		System.out.println("Signature: " + pjp.getSignature().toString());
+		return pjp.proceed();
 	}
 	
 }
