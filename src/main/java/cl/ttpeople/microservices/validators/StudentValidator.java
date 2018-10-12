@@ -20,9 +20,9 @@ public class StudentValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rut", "rut.whitespaces");
 		Student student = (Student)target;
 		if (!validateAge(student.getAge()))
-			errors.rejectValue("age", "age.tooyoung");
+			errors.rejectValue("age", "age.tooyoung","The age must be at least 18 years");
 		if (!validateRut(student.getRut()))
-			errors.rejectValue("rut", "rut.invalidformat");
+			errors.rejectValue("rut", "rut.invalidformat","Invalid format for RUT");
 			
 	}
 	
